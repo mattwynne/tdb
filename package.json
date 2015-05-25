@@ -1,0 +1,15 @@
+{
+  "name": "tdb",
+  "version": "0.0.1",
+  "description": "Test data builder",
+  "main": "src/tdb.js",
+  "scripts": {
+    "test": "iojs --harmony_arrow_functions ./node_modules/.bin/mocha --harmony_arrow_functions"
+  },
+  "author": "Matt Wynne",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "mocha": "^2.2.5"
+  }
+}
