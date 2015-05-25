@@ -12,17 +12,38 @@ describe('tdb', () => {
     }
   }
 
-  define(ThingToMake).defaultProperties({
-    name: "Nemo"
+  context('default properties', () => {
+
+    beforeEach(() => {
+      define(ThingToMake).defaultProperties({
+        name: "Nemo"
+      })
+    })
+
+    it('uses default property values if no properties specified', () => {
+      var madeThing = make.a(ThingToMake)
+      expect(madeThing.name).to.equal('Nemo')
+    })
+
+    it('overrides default values with explicit properties', () => {
+      var madeThing = make.a(ThingToMake, { name: "Dave" })
+      expect(madeThing.name).to.equal('Dave')
+    })
+
   })
 
-  it('uses default property values if no properties specified', () => {
-    var madeThing = make.a(ThingToMake)
-    expect(madeThing.name).to.equal('Nemo')
+  context('lazy default properties', () => {
+
+    beforeEach(() => {
+      define(ThingToMake).defaultProperties({
+        name: () => { return 'Lazy name' }
+      })
+    })
+
+    it('uses the evaluated lazy default property value when no properties specified', () => {
+      var madeThing = make.a(ThingToMake)
+      expect(madeThing.name).to.equal('Lazy name')
+    })
   })
 
-  it('overrides default values with explicit properties', () => {
-    var madeThing = make.a(ThingToMake, { name: "Dave" })
-    expect(madeThing.name).to.equal('Dave')
-  })
 })

@@ -11,7 +11,12 @@ class TestDataBuilder {
         var properties = {}
         Object.assign(properties, defaults[typeToMake.name], explicitProperties)
         Object.keys(properties).forEach((key) => {
-          result[key] = properties[key]
+          var value = properties[key]
+          if (typeof(value) === 'function') {
+            result[key] = properties[key].call()
+          } else {
+            result[key] = properties[key]
+          }
         })
         return result
       }
