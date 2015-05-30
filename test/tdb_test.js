@@ -73,4 +73,22 @@ describe('tdb', () => {
     })
   })
 
+  context('constructor arguments', () => {
+    class ValidatedThingToMake {
+      constructor(attributes) {
+        if (!attributes.name) {
+          throw new Error('name attribute is mandatory')
+        }
+        this.name = attributes.name
+      }
+    }
+
+    it('uses the defined constructor arguments when given', () => {
+      define(ValidatedThingToMake).constructWith({ name: 'Constructed name' })
+      var madeThing = make.a(ValidatedThingToMake)
+      expect(madeThing.name).to.equal('Constructed name')
+    })
+
+  })
+
 })

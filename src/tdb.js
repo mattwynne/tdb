@@ -1,23 +1,51 @@
 'use strict'
 Object.assign = require('object-assign')
 
-var defaults = {}
 var sequences = {}
+var definitions = {}
+
+class Definition {
+  constructor(type) {
+    this.type = type
+    this.defaults = {}
+  }
+
+  setDefaultProperties(properties) {
+    this.defaults = properties
+    return this
+  }
+
+  constructWith(constructorArguments) {
+    this.constructorArguments = constructorArguments
+    return this
+  }
+
+  defaultProperties() {
+    return new Properties(this.defaults)
+  }
+
+  build() {
+    if (this.constructorArguments) {
+      return new this.type(this.constructorArguments)
+    }
+    return new this.type()
+  }
+}
 
 class TestDataBuilder {
   constructor() {
+    var self = this
 
     this.make = {
       a: (typeToMake, explicitProperties) => {
-        var object = new typeToMake()
-        new Properties(defaults[typeToMake.name]).merge(explicitProperties).assignTo(object)
+        var object = definitions[typeToMake.name].build()
+        definitions[typeToMake.name].defaultProperties().merge(explicitProperties).assignTo(object)
         return object
       }
     }
 
     this.define = (typeToDefine, properties) => {
-      defaults[typeToDefine.name] = properties
-      return this
+      return definitions[typeToDefine.name] = new Definition(typeToDefine).setDefaultProperties(properties)
     }
 
   }
@@ -37,8 +65,8 @@ class Properties {
   assignTo(object) {
     var self = this
 
-    Object.keys(this.properties).forEach((key) => {
-      object[key] = valueFor(key)
+    Object.keys(this.properties).forEach((propertyName) => {
+      object[propertyName] = valueFor(propertyName)
     })
     return this
 
@@ -50,10 +78,10 @@ class Properties {
       return value
     }
 
-    function nextSequence(key) {
-      if (!sequences[key]) { sequences[key] = 0 }
-      sequences[key] = sequences[key] + 1
-      return sequences[key]
+    function nextSequence(propertyName) {
+      if (!sequences[propertyName]) { sequences[propertyName] = 0 }
+      sequences[propertyName] = sequences[propertyName] + 1
+      return sequences[propertyName]
     }
   }
 }
@@ -63,7 +91,7 @@ module.exports = new TestDataBuilder
 // Plug into jasmine/mocha to reset state between each test
 if (typeof beforeEach === 'function') {
   beforeEach(function () {
-    defaults = {};
+    definitions = {};
     sequences = {};
   });
 }
