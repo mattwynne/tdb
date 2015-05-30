@@ -60,16 +60,16 @@ describe('tdb', () => {
 
     beforeEach(() => {
       define(ThingToMake, {
-        name: (n) => { return 'Thing name #' + n }
+        name: (n) => { return `Thing name ${n}` }
       })
     })
 
     it('increments the sequence number each time it builds', () => {
       var madeThingOne = make.a(ThingToMake)
-      expect(madeThingOne.name).to.equal('Thing name #1')
+      expect(madeThingOne.name).to.equal('Thing name 1')
 
       var madeThingTwo = make.a(ThingToMake)
-      expect(madeThingTwo.name).to.equal('Thing name #2')
+      expect(madeThingTwo.name).to.equal('Thing name 2')
     })
   })
 
