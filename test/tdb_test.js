@@ -15,7 +15,7 @@ describe('tdb', () => {
   context('default properties', () => {
 
     beforeEach(() => {
-      define(ThingToMake).defaultProperties({
+      define(ThingToMake, {
         name: "Nemo"
       })
     })
@@ -35,7 +35,7 @@ describe('tdb', () => {
   context('lazy default properties', () => {
 
     beforeEach(() => {
-      define(ThingToMake).defaultProperties({
+      define(ThingToMake, {
         name: () => { return 'Lazy name' }
       })
     })
@@ -49,7 +49,7 @@ describe('tdb', () => {
   context('sequences', () => {
 
     beforeEach(() => {
-      define(ThingToMake).defaultProperties({
+      define(ThingToMake, {
         name: (n) => { return 'Thing name #' + n }
       })
     })

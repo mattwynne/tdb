@@ -24,13 +24,9 @@ class TestDataBuilder {
       }
     }
 
-    this.define = (typeToDefine) => {
-      return {
-        defaultProperties: (properties) => {
-          defaults[typeToDefine.name] = properties
-          return this
-        }
-      }
+    this.define = (typeToDefine, properties) => {
+      defaults[typeToDefine.name] = properties
+      return this
     }
 
     var nextSequence = (key) => {
