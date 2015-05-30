@@ -4,6 +4,28 @@ Object.assign = require('object-assign')
 var sequences = {}
 var definitions = {}
 
+const tdb = {}
+
+tdb.make = (typeToMake, explicitProperties) => {
+  var definition = definitions[typeToMake.name]
+  if (!definition) {
+    throw new UndefinedError(typeToMake.name)
+  }
+  var object = definition.buildInstance()
+  definition.getDefaultProperties().merge(explicitProperties).assignTo(object)
+  return object
+}
+tdb.make.a = tdb.make
+
+tdb.define = (typeToDefine, properties) => {
+  return definitions[typeToDefine.name] = new Definition(typeToDefine).setDefaultProperties(properties)
+}
+
+class UndefinedError extends Error {}
+
+tdb.Errors = {}
+tdb.Errors.UndefinedError = UndefinedError
+
 class Definition {
   constructor(type) {
     this.type = type
@@ -20,34 +42,15 @@ class Definition {
     return this
   }
 
-  defaultProperties() {
+  getDefaultProperties() {
     return new Properties(this.defaults)
   }
 
-  build() {
+  buildInstance() {
     if (this.constructorArguments) {
       return new this.type(this.constructorArguments)
     }
     return new this.type()
-  }
-}
-
-class TestDataBuilder {
-  constructor() {
-    var self = this
-
-    this.make = {
-      a: (typeToMake, explicitProperties) => {
-        var object = definitions[typeToMake.name].build()
-        definitions[typeToMake.name].defaultProperties().merge(explicitProperties).assignTo(object)
-        return object
-      }
-    }
-
-    this.define = (typeToDefine, properties) => {
-      return definitions[typeToDefine.name] = new Definition(typeToDefine).setDefaultProperties(properties)
-    }
-
   }
 }
 
@@ -86,7 +89,7 @@ class Properties {
   }
 }
 
-module.exports = new TestDataBuilder
+module.exports = tdb
 
 // Plug into jasmine/mocha to reset state between each test
 if (typeof beforeEach === 'function') {

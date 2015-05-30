@@ -91,4 +91,14 @@ describe('tdb', () => {
 
   })
 
+  context('user errors', () => {
+    class NewThingToMake {}
+
+    var UndefinedError = tdb.Errors.UndefinedError
+
+    it("it raises an error when asked to make a type that hasn't been defined", () => {
+      expect(() => { make.a(NewThingToMake) }).to.throw(UndefinedError)
+    })
+  })
+
 })
