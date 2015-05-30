@@ -9,18 +9,9 @@ class TestDataBuilder {
 
     this.make = {
       a: (typeToMake, explicitProperties) => {
-        var result = new typeToMake()
-        var properties = {}
-        Object.assign(properties, defaults[typeToMake.name], explicitProperties)
-        Object.keys(properties).forEach((key) => {
-          var value = properties[key]
-          if (typeof(value) === 'function') {
-            result[key] = properties[key].call(this, nextSequence(typeToMake, key))
-          } else {
-            result[key] = properties[key]
-          }
-        })
-        return result
+        var object = new typeToMake()
+        new Properties(defaults[typeToMake.name]).merge(explicitProperties).assignTo(object)
+        return object
       }
     }
 
@@ -29,10 +20,38 @@ class TestDataBuilder {
       return this
     }
 
-    var nextSequence = (key) => {
-      if (!sequences[key]) {
-        sequences[key] = 0
+  }
+}
+
+class Properties {
+  constructor(defaultProperties) {
+    this.properties = {}
+    this.defaultProperties = defaultProperties
+  }
+
+  merge(explicitProperties) {
+    Object.assign(this.properties, this.defaultProperties, explicitProperties)
+    return this
+  }
+
+  assignTo(object) {
+    var self = this
+
+    Object.keys(this.properties).forEach((key) => {
+      object[key] = valueFor(key)
+    })
+    return this
+
+    function valueFor(propertyName) {
+      var value = self.properties[propertyName]
+      if (typeof(value) === 'function') {
+        return value.call(self, nextSequence(object.constructor.name, propertyName))
       }
+      return value
+    }
+
+    function nextSequence(key) {
+      if (!sequences[key]) { sequences[key] = 0 }
       sequences[key] = sequences[key] + 1
       return sequences[key]
     }
