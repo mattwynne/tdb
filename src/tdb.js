@@ -1,7 +1,6 @@
 'use strict'
 Object.assign = require('object-assign')
 
-var sequences = {}
 var definitions = {}
 
 const tdb = {}
@@ -30,6 +29,7 @@ class Definition {
   constructor(type) {
     this.type = type
     this.defaults = {}
+    this.sequences = {}
   }
 
   setDefaultProperties(properties) {
@@ -43,7 +43,7 @@ class Definition {
   }
 
   getDefaultProperties() {
-    return new Properties(this.defaults)
+    return new Properties(this.defaults, this.sequences)
   }
 
   buildInstance() {
@@ -55,9 +55,10 @@ class Definition {
 }
 
 class Properties {
-  constructor(defaultProperties) {
+  constructor(defaultProperties, sequences) {
     this.properties = {}
     this.defaultProperties = defaultProperties
+    this.sequences = sequences
   }
 
   merge(explicitProperties) {
@@ -76,16 +77,28 @@ class Properties {
     function valueFor(propertyName) {
       var value = self.properties[propertyName]
       if (typeof(value) === 'function') {
-        return value.call(self, nextSequence(object.constructor.name, propertyName))
+        return value.call(self, sequenceFor(propertyName).next())
       }
       return value
     }
 
-    function nextSequence(propertyName) {
-      if (!sequences[propertyName]) { sequences[propertyName] = 0 }
-      sequences[propertyName] = sequences[propertyName] + 1
-      return sequences[propertyName]
+    function sequenceFor(propertyName) {
+      if (!self.sequences[propertyName]) {
+        self.sequences[propertyName] = new Sequence()
+      }
+      return self.sequences[propertyName]
     }
+  }
+}
+
+class Sequence {
+  constructor() {
+    this.value = 0
+  }
+
+  next() {
+    this.value ++
+    return this.value
   }
 }
 
@@ -95,6 +108,5 @@ module.exports = tdb
 if (typeof beforeEach === 'function') {
   beforeEach(function () {
     definitions = {};
-    sequences = {};
   });
 }
