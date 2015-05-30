@@ -25,6 +25,16 @@ describe('tdb', () => {
       expect(madeThing.name).to.equal('Nemo')
     })
 
+  })
+
+  context('explicit properties', () => {
+
+    beforeEach(() => {
+      define(ThingToMake, {
+        name: "Nemo"
+      })
+    })
+
     it('overrides default values with explicit properties', () => {
       var madeThing = make.a(ThingToMake, { name: "Dave" })
       expect(madeThing.name).to.equal('Dave')
