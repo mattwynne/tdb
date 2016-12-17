@@ -1,6 +1,6 @@
 'use strict'
 const expect = require('chai').expect
-const tdb = require('../src/tdb')
+const tdb = require('../lib/tdb')
 const make = tdb.make
 const define = tdb.define
 

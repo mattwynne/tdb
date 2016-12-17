@@ -2,7 +2,7 @@
   "name": "tdb",
   "version": "0.0.2",
   "description": "Test data builder",
-  "main": "src/tdb.js",
+  "main": "lib/tdb.js",
   "scripts": {
     "test": "iojs --harmony_arrow_functions ./node_modules/.bin/mocha --harmony_arrow_functions"
   },
