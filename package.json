@@ -4,7 +4,7 @@
   "description": "Test data builder",
   "main": "lib/tdb.js",
   "scripts": {
-    "test": "iojs --harmony_arrow_functions ./node_modules/.bin/mocha --harmony_arrow_functions"
+    "test": "mocha"
   },
   "author": "Matt Wynne",
   "license": "MIT",
