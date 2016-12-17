@@ -5,6 +5,9 @@ const make = tdb.make
 const define = tdb.define
 
 describe('tdb', () => {
+  beforeEach(function () {
+    tdb._reset()
+  })
 
   class ThingToMake {
     constructor() {
