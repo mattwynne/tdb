@@ -2,6 +2,9 @@
   "name": "tdb",
   "version": "0.0.2",
   "description": "Test data builder",
+  "engines": {
+    "node": ">=7.0.0"
+  },
   "main": "lib/tdb.js",
   "scripts": {
     "test": "mocha"
@@ -16,7 +19,5 @@
     "chai": "^2.3.0",
     "mocha": "^2.2.5"
   },
-  "dependencies": {
-    "object-assign": "^2.0.0"
-  }
+  "dependencies": {}
 }
