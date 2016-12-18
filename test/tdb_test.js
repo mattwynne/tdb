@@ -92,6 +92,13 @@ describe('tdb', () => {
       expect(madeThing.name).to.equal('Constructed name')
     })
 
+    it('can use sequences in constructor arguments', () => {
+      define(ValidatedThingToMake).constructWith({ 
+        name: (n) => `Constructed name ${n}`
+      })
+      var madeThing = make.a(ValidatedThingToMake)
+      expect(madeThing.name).to.equal('Constructed name 1')
+    })
   })
 
   context('user errors', () => {
