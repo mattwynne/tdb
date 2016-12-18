@@ -1,6 +1,6 @@
 {
   "name": "tdb",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Test data builder",
   "engines": {
     "node": ">=7.0.0"
@@ -11,8 +11,8 @@
   },
   "author": "Matt Wynne",
   "license": "MIT",
-  "repository": { 
-    "type": "git", 
+  "repository": {
+    "type": "git",
     "url": "git@github.com:mattwynne/tdb.git"
   },
   "devDependencies": {
