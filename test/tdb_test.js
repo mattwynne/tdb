@@ -5,8 +5,10 @@ const make = tdb.make
 const define = tdb.define
 
 describe('tdb', () => {
+  let factory
+
   beforeEach(function () {
-    tdb._reset()
+    factory = tdb()
   })
 
   class ThingToMake {
@@ -18,13 +20,13 @@ describe('tdb', () => {
   context('default properties', () => {
 
     beforeEach(() => {
-      define(ThingToMake, {
+      factory.define(ThingToMake, {
         name: "Nemo"
       })
     })
 
     it('uses default property values if no properties specified', () => {
-      var madeThing = make.a(ThingToMake)
+      var madeThing = factory.make(ThingToMake)
       expect(madeThing.name).to.equal('Nemo')
     })
 
@@ -33,13 +35,13 @@ describe('tdb', () => {
   context('explicit properties', () => {
 
     beforeEach(() => {
-      define(ThingToMake, {
+      factory.define(ThingToMake, {
         name: "Nemo"
       })
     })
 
     it('overrides default values with explicit properties', () => {
-      var madeThing = make.a(ThingToMake, { name: "Dave" })
+      var madeThing = factory.make(ThingToMake, { name: "Dave" })
       expect(madeThing.name).to.equal('Dave')
     })
 
@@ -48,13 +50,13 @@ describe('tdb', () => {
   context('lazy default properties', () => {
 
     beforeEach(() => {
-      define(ThingToMake, {
+      factory.define(ThingToMake, {
         name: () => { return 'Lazy name' }
       })
     })
 
     it('uses the evaluated lazy default property value when no properties specified', () => {
-      var madeThing = make.a(ThingToMake)
+      var madeThing = factory.make(ThingToMake)
       expect(madeThing.name).to.equal('Lazy name')
     })
   })
@@ -62,16 +64,16 @@ describe('tdb', () => {
   context('sequences', () => {
 
     beforeEach(() => {
-      define(ThingToMake, {
+      factory.define(ThingToMake, {
         name: (n) => { return `Thing name ${n}` }
       })
     })
 
     it('increments the sequence number each time it builds', () => {
-      var madeThingOne = make.a(ThingToMake)
+      var madeThingOne = factory.make(ThingToMake)
       expect(madeThingOne.name).to.equal('Thing name 1')
 
-      var madeThingTwo = make.a(ThingToMake)
+      var madeThingTwo = factory.make(ThingToMake)
       expect(madeThingTwo.name).to.equal('Thing name 2')
     })
   })
@@ -87,16 +89,16 @@ describe('tdb', () => {
     }
 
     it('uses the defined constructor arguments when given', () => {
-      define(ValidatedThingToMake).constructWith({ name: 'Constructed name' })
-      var madeThing = make.a(ValidatedThingToMake)
+      factory.define(ValidatedThingToMake).constructWith({ name: 'Constructed name' })
+      var madeThing = factory.make(ValidatedThingToMake)
       expect(madeThing.name).to.equal('Constructed name')
     })
 
     it('can use sequences in constructor arguments', () => {
-      define(ValidatedThingToMake).constructWith({ 
+      factory.define(ValidatedThingToMake).constructWith({
         name: (n) => `Constructed name ${n}`
       })
-      var madeThing = make.a(ValidatedThingToMake)
+      var madeThing = factory.make(ValidatedThingToMake)
       expect(madeThing.name).to.equal('Constructed name 1')
     })
   })
@@ -107,7 +109,7 @@ describe('tdb', () => {
     var UndefinedError = tdb.Errors.UndefinedError
 
     it("it raises an error when asked to make a type that hasn't been defined", () => {
-      expect(() => { make.a(NewThingToMake) }).to.throw(UndefinedError, 
+      expect(() => { factory.make(NewThingToMake) }).to.throw(UndefinedError,
         'Please use `define` to specify default attributes for a NewThingToMake, before attempting to make one.')
     })
   })
