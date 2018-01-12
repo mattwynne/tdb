@@ -17,6 +17,10 @@ describe('tdb', () => {
     }
   }
 
+  class OtherThingToMake {
+    constructor() {}
+  }
+
   context('default properties', () => {
 
     beforeEach(() => {
@@ -100,6 +104,33 @@ describe('tdb', () => {
       })
       var madeThing = factory.make(ValidatedThingToMake)
       expect(madeThing.name).to.equal('Constructed name 1')
+    })
+  })
+
+  context('arrays', () => {
+    beforeEach(() => {
+      factory.define(ThingToMake).constructWith({
+        name: 'thing'
+      })
+      factory.define(OtherThingToMake).constructWith({
+        name: 'other thing'
+      })
+    })
+
+    it('can construct arrays of different things', () => {
+      var madeThing = factory.make([ThingToMake, OtherThingToMake])
+      expect(madeThing).to.deep.equal([ new ThingToMake(), new OtherThingToMake() ])
+    })
+
+    it('can construct deeply-nested arrays of things', () => {
+      var madeThing = factory.make([
+        [ ThingToMake, OtherThingToMake ],
+        OtherThingToMake
+      ])
+      expect(madeThing).to.deep.equal([
+        [ new ThingToMake(), new OtherThingToMake() ],
+        new OtherThingToMake()
+      ])
     })
   })
 
